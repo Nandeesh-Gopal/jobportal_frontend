@@ -4,16 +4,18 @@ import API from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import Toast from "../components/Toast";
 
-function Login() {
+function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [toast, setToast] = useState("");
   const { setToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     try {
-      const res = await API.post("/auth/login", {
+      const res = await API.post("/auth/register", {
+        name,
         email,
         password,
       });
@@ -21,7 +23,7 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       setToken(res.data.token);
 
-      setToast("Login successful");
+      setToast("Registration successful");
 
       setTimeout(() => {
         setToast("");
@@ -29,7 +31,7 @@ function Login() {
       }, 1200);
 
     } catch (err) {
-      setToast(err.response?.data?.message || "Invalid credentials");
+      setToast(err.response?.data?.message || "Registration failed");
       setTimeout(() => setToast(""), 2000);
     }
   };
@@ -38,12 +40,19 @@ function Login() {
     <div>
       <Toast message={toast} />
 
-      <h2>Login</h2>
+      <h2>Signup</h2>
+
+      <input
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
       <input
         type="email"
         placeholder="Email"
-        value={email} //The value attribute binds the input field to React state.
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
@@ -54,9 +63,9 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleRegister}>Register</button>
     </div>
   );
 }
 
-export default Login;
+export default Register;
